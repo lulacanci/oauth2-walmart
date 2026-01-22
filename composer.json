@@ -1,28 +1,30 @@
 {
-    "name": "acip/oauth2-whatnot",
-    "description": "Whatnot Client Provider for The PHP League OAuth2-Client",
+    "name": "lulacanci/oauth2-walmart",
+    "description": "Walmart Marketplace OAuth2 Client Provider for The PHP League OAuth2-Client",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Ciprian Amariei",
-            "email": "ciprian.amariei@gmail.com"
+            "name": "Iulian Danaila",
+            "email": "iulian@example.com"
         }
     ],
     "keywords": [
         "oauth",
         "oauth2",
         "client",
-        "whatnot"
+        "walmart",
+        "marketplace",
+        "seller"
     ],
     "autoload": {
         "psr-4": {
-            "Acip\\OAuth2\\Client\\": "src/"
+            "Lulacanci\\OAuth2\\Client\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Acip\\OAuth2\\Client\\Tests\\": "tests/src/"
+            "Lulacanci\\OAuth2\\Client\\Tests\\": "tests/src/"
         }
     },
     "require": {
