@@ -64,6 +64,30 @@ class Walmart extends AbstractProvider
     }
 
     /**
+     * Build the authorization URL with Walmart-specific parameter handling.
+     * Walmart requires redirectUri to NOT be URL-encoded.
+     *
+     * @param array $options
+     * @return string
+     */
+    public function getAuthorizationUrl(array $options = [])
+    {
+        $this->state = $options['state'] ?? $this->getRandomState();
+        $options['state'] = $this->state;
+
+        $params = $this->getAuthorizationParameters($options);
+
+        // Build URL without encoding redirectUri (Walmart requirement)
+        $redirectUri = $params['redirectUri'];
+        unset($params['redirectUri']);
+
+        $query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+        $url = $this->getBaseAuthorizationUrl() . '?' . $query . '&redirectUri=' . $redirectUri;
+
+        return $url;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getBaseAccessTokenUrl(array $params)
