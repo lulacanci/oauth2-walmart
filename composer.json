@@ -1,5 +1,6 @@
 {
     "name": "lulacanci/oauth2-walmart",
+    "version": "1.0.0",
     "description": "Walmart Marketplace OAuth2 Client Provider for The PHP League OAuth2-Client",
     "type": "library",
     "license": "MIT",
