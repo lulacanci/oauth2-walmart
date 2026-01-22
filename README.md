@@ -1,11 +1,11 @@
-# Whatnot Provider for OAuth 2.0 Client
+# Walmart Provider for OAuth 2.0 Client
 
-[![License](https://img.shields.io/packagist/l/acip/oauth2-whatnot)](https://github.com/acip/oauth2-whatnot/blob/main/LICENSE)
-[![Latest Stable Version](https://img.shields.io/packagist/v/acip/oauth2-whatnot)](https://packagist.org/packages/acip/oauth2-whatnot)
+[![License](https://img.shields.io/packagist/l/acip/oauth2-whatnot)](https://github.com/lulacanci/oauth2-walmart/blob/main/LICENSE)
+[![Latest Stable Version](https://img.shields.io/packagist/v/acip/oauth2-whatnot)](https://packagist.org/packages/lulacanci/oauth2-walmart)
 
-This package provides [Whatnot][whatnot] OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
+This package provides [Walmart][Walmart] OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
-[whatnot]: https://whatnot.com/
+[whatnot]: https://walmart.com/
 
 This package is compliant with [PSR-1][], [PSR-2][] and [PSR-4][]. If you notice compliance oversights, please send a patch via pull request.
 
@@ -15,9 +15,9 @@ This package is compliant with [PSR-1][], [PSR-2][] and [PSR-4][]. If you notice
 
 ## Requirements
 
-To use this package, it will be necessary to have a Whatnot client ID and client secret. These are referred to as `{whatnot-client-id}` and `{whatnot-client-secret}` in the documentation.
+To use this package, it will be necessary to have a Walmart client ID and client secret. These are referred to as `{walmart-client-id}` and `{walmart-client-secret}` in the documentation.
 
-Please follow the [Whatnot instructions][oauth-setup] to create the required credentials.
+Please follow the [Walmart instructions][oauth-setup] to create the required credentials.
 
 [oauth-setup]: https://developers.whatnot.com/docs/getting-started/authentication
 
@@ -26,7 +26,7 @@ Please follow the [Whatnot instructions][oauth-setup] to create the required cre
 To install, use composer:
 
 ```sh
-composer require acip/oauth2-whatnot
+composer require lulacanci/oauth2-walmart
 ```
 
 ## Usage
@@ -36,14 +36,14 @@ composer require acip/oauth2-whatnot
 ```php
 require __DIR__ . '/vendor/autoload.php';
 
-use Acip\OAuth2\Client\Provider\Whatnot;
-use Acip\OAuth2\Client\Provider\WhatnotMode;
+use Lulacanci\OAuth2\Client\Provider\Walmart;
+use Lulacanci\OAuth2\Client\Provider\WalmartMode;
 
 session_start();
 header('Content-Type: text/plain');
 
-$clientId = '{whatnot-client-id}';
-$clientSecret = '{whatnot-client-secret}';
+$clientId = '{walmart-client-id}';
+$clientSecret = '{walmart-client-secret}';
 $redirectUri = 'https://example.com/callback-url';
 
 $provider = new Whatnot(
@@ -52,14 +52,14 @@ $provider = new Whatnot(
         'clientSecret' => $clientSecret,
         'redirectUri'  => $redirectUri,
     ],
-    mode: WhatnotMode::STAGE // use WhatnotMode::LIVE for production
+    mode: WalmartMode::STAGE // use WalmartMode::LIVE for production
 );
 
 if (empty($_GET['code'])) {
     // Step 1. redirect to the authorization URL
     $options = [
         // use the 'scope' key to specify the desired scopes
-        // see https://developers.whatnot.com/docs/getting-started/authentication#available-scopes
+        // see https://developer.walmart.com/us-marketplace/docs/api-scope-walmart-marketplace
         'scope' => ['read:inventory', 'write:inventory'],
     ];
 
@@ -105,15 +105,15 @@ It is important to note that the refresh token is invalidated when it is succefu
 ```php
 require __DIR__ . '/vendor/autoload.php';
 
-use Acip\OAuth2\Client\Provider\Whatnot;
-use Acip\OAuth2\Client\Provider\WhatnotMode;
+use Lulacanci\OAuth2\Client\Provider\Walmart;
+use Lulacanci\OAuth2\Client\Provider\WalmartMode;
 
-$provider = new Whatnot([
-        'clientId'     => '{whatnot-client-id}',
-        'clientSecret' => '{whatnot-client-secret}',
+$provider = new Walmart([
+        'clientId'     => '{walmart-client-id}',
+        'clientSecret' => '{walmart-client-secret}',
         'redirectUri'  => 'https://example.com/callback-url',
     ],
-    mode: WhatnotMode::STAGE
+    mode: WalmartMode::STAGE
 );
 
 $refreshToken = $token->getRefreshToken();
@@ -135,7 +135,7 @@ $authorizationUrl = $provider->getAuthorizationUrl([
 ]);
 ```
 
-[scopes]: https://developers.whatnot.com/docs/getting-started/authentication#available-scopes
+[scopes]: https://developer.walmart.com/us-marketplace/docs/api-scope-walmart-marketplace
 
 ## Testing
 
@@ -147,8 +147,8 @@ composer test
 
 ## Credits
 
-* [Ciprian Amariei](https://github.com/acip)
-* [All Contributors](https://github.com/acip/oauth2-whatnot/contributors)
+* [Iulian Danaila](https://github.com/lulacanci)
+* [All Contributors](https://github.com/lulacanci/oauth2-walmart/contributors)
 
 ## Sponsors
 [Aureus POS - The Gold Standard Of Bullion & Collectibles Software](https://www.aureuspos.com/)
@@ -156,4 +156,4 @@ composer test
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/thephpacip/oauth2-whatnot/blob/main/LICENSE) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/lulacanci/oauth2-walmart/blob/main/LICENSE) for more information.
