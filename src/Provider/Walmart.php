@@ -128,12 +128,8 @@ class Walmart extends AbstractProvider
             'clientType' => $this->clientType,
             'nonce' => $options['nonce'] ?? $this->generateNonce(),
             'state' => $options['state'],
+            'scope' => $options['scope'] ?? '',
         ];
-
-        // Add scope if provided
-        if (!empty($options['scope'])) {
-            $params['scope'] = $options['scope'];
-        }
 
         return $params;
     }
