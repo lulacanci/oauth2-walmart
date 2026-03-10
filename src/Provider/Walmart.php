@@ -14,6 +14,8 @@ class Walmart extends AbstractProvider
      */
     protected string $clientType = 'seller';
 
+    protected ?string $sellerId = null;
+
     /**
      * Authorization base URL
      */
@@ -170,6 +172,10 @@ class Walmart extends AbstractProvider
         return [
             'Accept' => 'application/json',
             'Content-Type' => 'application/x-www-form-urlencoded',
+            'WM_SVC.NAME' => 'Walmart Marketplace',
+            'WM_QOS.CORRELATION_ID' => bin2hex(random_bytes(16)),
+            'WM_SVC.VERSION' => '1.0.0',
+            'WM_MARKET' => strtolower($this->marketplace->value),
         ];
     }
 
@@ -184,6 +190,39 @@ class Walmart extends AbstractProvider
         return [
             'Authorization' => 'Basic ' . $credentials,
         ];
+    }
+
+    /**
+     * Override to remove client_id and client_secret from the POST body.
+     * Walmart expects credentials only in the Authorization header (Basic auth),
+     * and rejects requests that include them in both places.
+     *
+     * @inheritdoc
+     */
+    protected function getAccessTokenRequest(array $params)
+    {
+        unset($params['client_id'], $params['client_secret']);
+
+        $request = parent::getAccessTokenRequest($params);
+
+        // Add Basic auth header — getAuthorizationHeaders() is not called during token exchange
+        $credentials = base64_encode($this->clientId . ':' . $this->clientSecret);
+        $request = $request->withHeader('Authorization', 'Basic ' . $credentials);
+        if ($this->sellerId) {
+            $request = $request->withHeader('WM_PARTNER.ID', $this->sellerId);
+        }
+
+        // Fix duplicate Content-Type
+        $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        \Log::info('[Walmart OAuth] Full token request', [
+            'method' => $request->getMethod(),
+            'url' => (string) $request->getUri(),
+            'headers' => $request->getHeaders(),
+            'body' => (string) $request->getBody(),
+        ]);
+
+        return $request;
     }
 
     /**
@@ -203,7 +242,20 @@ class Walmart extends AbstractProvider
     protected function checkResponse(ResponseInterface $response, $data)
     {
         if ($response->getStatusCode() >= 400) {
-            $message = $data['error_description'] ?? $data['error'] ?? $response->getReasonPhrase();
+            $message = $data['error_description']
+                ?? $data['error']
+                ?? $response->getReasonPhrase();
+
+            if (is_array($message)) {
+                $message = $message[0]['description'] ?? json_encode($message);
+            }
+
+            \Log::error('[Walmart OAuth] Token request failed', [
+                'status' => $response->getStatusCode(),
+                'message' => $message,
+                'response_body' => $data,
+                'response_headers' => $response->getHeaders(),
+            ]);
 
             throw new IdentityProviderException(
                 $message,
@@ -267,5 +319,10 @@ class Walmart extends AbstractProvider
     public function isSandbox(): bool
     {
         return $this->mode === WalmartMode::SANDBOX;
+    }
+
+    public function setSellerId(string $sellerId): void
+    {
+        $this->sellerId = $sellerId;
     }
 }
