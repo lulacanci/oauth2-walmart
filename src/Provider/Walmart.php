@@ -202,7 +202,12 @@ class Walmart extends AbstractProvider
     protected function getAccessTokenRequest(array $params)
     {
         unset($params['client_id'], $params['client_secret']);
-
+        
+        // Walmart rejects redirect_uri on refresh token requests
+        if (isset($params['grant_type']) && $params['grant_type'] === 'refresh_token') {
+            unset($params['redirect_uri']);
+        }
+        
         $request = parent::getAccessTokenRequest($params);
 
         // Add Basic auth header — getAuthorizationHeaders() is not called during token exchange
